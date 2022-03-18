@@ -67,12 +67,7 @@ function choices() {
 };
 
 function allEmployees() {
-    const query = `SELECT employees.id, employees.first_name, employees.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
-    FROM employees
-    LEFT JOIN employees manager on manager.id = employees.manager_id
-    INNER JOIN role ON (role.id = employees.role_id)
-    INNER JOIN department ON (department.id = role.department_id)
-    ORDER BY employees.id;`;
+    const query = `SELECT employees.id, employees.first_name, employees.last_name, FROM employees`;
     db.query(query, (err, res) => {
         if (err) throw err;
         console.log('\n');
@@ -84,11 +79,7 @@ function allEmployees() {
 };
 
 function allDepartments() {
-    const query = `SELECT department.name AS department, role.title, employees.id, employees.first_name, employees.last_name
-    FROM employees
-    LEFT JOIN role ON (role.id = employees.role_id)
-    LEFT JOIN department ON (department.id = role.department_id)
-    ORDER BY department.name;`;
+    const query = `SELECT department.id role.id, employees.id, employees.first_name, employees.last_name FROM employees;`;
     db.query(query, (err, res) => {
         if (err) throw err;
         console.log('\n');
@@ -101,12 +92,7 @@ function allDepartments() {
 
 
 function allManagers() {
-    const query = `SELECT CONCAT(manager.first_name, ' ', manager.last_name) AS manager, department.name AS department, employees.id, employees.first_name, employees.last_name, role.title
-    FROM employees
-    LEFT JOIN employees manager on manager.id = employees.manager_id
-    INNER JOIN role ON (role.id = employees.role_id && employees.manager_id != 'NULL')
-    INNER JOIN department ON (department.id = role.department_id)
-    ORDER BY manager;`;
+    const query = `SELECT employees.id, employees.first_name, employees.last_name, role.id FROM employees;`;
     db.query(query, (err, res) => {
         if (err) throw err;
         console.log('\n');
@@ -118,11 +104,7 @@ function allManagers() {
 };
 
 function allRoles() {
-    const query = `SELECT role.title, employees.id, employees.first_name, employees.last_name, department.name AS department
-    FROM employees
-    LEFT JOIN role ON (role.id = employees.role_id)
-    LEFT JOIN department ON (department.id = role.department_id)
-    ORDER BY role.title;`;
+    const query = `SELECT role.id, employees.id, employees.first_name, employees.last_name, department.id FROM employees;`;
     db.query(query, (err, res) => {
         if (err) throw err;
         console.log('\n');
@@ -136,7 +118,7 @@ function allRoles() {
 
 async function addEmployee() {
     const addname = await inquirer.prompt(askName());
-    db.query('SELECT role.id, role.title FROM role ORDER BY role.id;', async (err, res) => {
+    db.query('SELECT role.id FROM role ORDER BY role.id;', async (err, res) => {
         if (err) throw err;
         const { role } = await inquirer.prompt([
             {

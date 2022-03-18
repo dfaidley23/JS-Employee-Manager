@@ -4,7 +4,8 @@
   "description": "mysql homework",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "push-it": "git add . && git commit -m \"empty message\" && git push"
   },
   "author": "",
   "license": "ISC",
