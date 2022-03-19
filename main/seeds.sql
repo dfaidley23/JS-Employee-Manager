@@ -18,12 +18,11 @@ SELECT * FROM managers;
 
 INSERT INTO role (id, title, salary, department_id)
 VALUES
-    (001, 'Accountant', '30.00', 001),
-    (002, 'Sys Admin', '35.00', 002),
-    (003, 'Software Engineer', '70.00', 004),
-    (004, 'Sales Rep', '20.00', 003),
-    (005, 'Service Desk', '20.00', 002);
-
+    (001, 'Accountant', '50000', 001),
+    (002, 'Sys Admin', '70000', 002),
+    (003, 'Software Engineer', '90000', 004),
+    (004, 'Sales Rep', '35000', 003),
+    (005, 'Service Desk', '45000', 002);
 
 SELECT * FROM role;
 

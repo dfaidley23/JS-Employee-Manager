@@ -1,12 +1,13 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
+require('console.table');
 
 // Connecting to database
 const db = mysql.createConnection(
     {
       host: 'localhost',
       user: 'root',
-      password: 'CasaNova123!@#',
+      password: 'rootroot',
       database: 'employee_db'
     },
     console.log(`Connected to the employee_db database.`)
@@ -17,7 +18,10 @@ const questions = {
     allEmployees: "View All Employees",
     allDepartments: "View All Employees By Department",
     allManagers: "View All Employees By Manager",
-    allRoles: "View All Roles",
+    allRoles: "View All Employess By Roles",
+    viewManagers: "View All Managers",
+    viewDepartments: "View All Departments",
+    viewRoles: "View All Roles",
     addEmployee: "Add An Employee",
     exit: "Exit"
 };
@@ -32,6 +36,9 @@ function choices() {
             questions.allDepartments,
             questions.allManagers,
             questions.allRoles,
+            questions.viewManagers,
+            questions.viewDepartments,
+            questions.viewRoles,
             questions.addEmployee,
             questions.exit
         ]
@@ -46,13 +53,25 @@ function choices() {
             case questions.allDepartments:
                 allDepartments();
                 break;
-
+        
             case questions.allManagers:
                 allManagers();
                 break;
-
+    
             case questions.allRoles:
                 allRoles();
+                break;
+
+            case questions.viewManagers:
+                viewManagers();
+                break;
+
+            case questions.viewDepartments:
+                viewDepartments();
+                break;
+
+            case questions.viewRoles:
+                viewRoles();
                 break;
 
             case questions.addEmployee:
@@ -61,13 +80,14 @@ function choices() {
 
             case questions.exit:
                 db.end();
+                console.log('Bye');
                 break;
         }
     });
 };
 
 function allEmployees() {
-    const query = `SELECT employees.id, employees.first_name, employees.last_name, FROM employees`;
+    const query = `SELECT * FROM employees`;
     db.query(query, (err, res) => {
         if (err) throw err;
         console.log('\n');
@@ -79,7 +99,8 @@ function allEmployees() {
 };
 
 function allDepartments() {
-    const query = `SELECT department.id role.id, employees.id, employees.first_name, employees.last_name FROM employees;`;
+    // const query = `SELECT * FROM employees ORDER BY department_id;`;
+    const query = `SELECT * FROM employees ;`;
     db.query(query, (err, res) => {
         if (err) throw err;
         console.log('\n');
@@ -90,9 +111,8 @@ function allDepartments() {
     });
 };
 
-
 function allManagers() {
-    const query = `SELECT employees.id, employees.first_name, employees.last_name, role.id FROM employees;`;
+    const query = `SELECT * FROM employees ORDER BY managers_id;`;
     db.query(query, (err, res) => {
         if (err) throw err;
         console.log('\n');
@@ -104,7 +124,7 @@ function allManagers() {
 };
 
 function allRoles() {
-    const query = `SELECT role.id, employees.id, employees.first_name, employees.last_name, department.id FROM employees;`;
+    const query = `SELECT * FROM employees ORDER BY role_id;`;
     db.query(query, (err, res) => {
         if (err) throw err;
         console.log('\n');
@@ -116,9 +136,45 @@ function allRoles() {
 
 };
 
+function viewManagers() {
+    const query = `SELECT * FROM managers ORDER BY managers.id;`;
+    db.query(query, (err, res) => {
+        if (err) throw err;
+        console.log('\n');
+        console.log('VIEW ALL MANAGERS');
+        console.log('\n');
+        console.table(res);
+        choices();
+    });
+};
+
+function viewDepartments() {
+    const query = `SELECT * FROM department ORDER BY department.id;`;
+    db.query(query, (err, res) => {
+        if (err) throw err;
+        console.log('\n');
+        console.log('VIEW ALL DEPARTMENTS');
+        console.log('\n');
+        console.table(res);
+        choices();
+    });
+};
+
+function viewRoles() {
+    const query = `SELECT * FROM role ORDER BY role.id;`;
+    db.query(query, (err, res) => {
+        if (err) throw err;
+        console.log('\n');
+        console.log('VIEW ALL ROLES');
+        console.log('\n');
+        console.table(res);
+        choices();
+    });
+};
+
 async function addEmployee() {
     const addname = await inquirer.prompt(askName());
-    db.query('SELECT role.id FROM role ORDER BY role.id;', async (err, res) => {
+    db.query('SELECT * FROM role ORDER BY role.id;', async (err, res) => {
         if (err) throw err;
         const { role } = await inquirer.prompt([
             {
@@ -170,17 +226,15 @@ async function addEmployee() {
                     first_name: addname.first,
                     last_name: addname.last,
                     role_id: roleId,
-                    manager_id: parseInt(managersID)
+                    managers_id: parseInt(managersID)
                 },
                 (err, res) => {
                     if (err) throw err;
                     choices();
-
                 }
             );
         });
     });
-
 };
 
 function askName() {
@@ -210,7 +264,7 @@ function askName() {
 //     console.table(results);
 // });
 
-// db.query('SELECT * FROM employeess', function (err, results) {
+// db.query('SELECT * FROM employees', function (err, results) {
 //     console.table(results);
 // });
 

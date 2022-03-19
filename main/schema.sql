@@ -26,7 +26,7 @@ CREATE TABLE managers (
 CREATE TABLE role (
   id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
   title VARCHAR(30) NOT NULL,
-  salary decimal(10,2) NOT NULL,
+  salary decimal UNSIGNED NOT NULL,
   department_id INT,
   FOREIGN KEY (department_id)
   REFERENCES department(id)
