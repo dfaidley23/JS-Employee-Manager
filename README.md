@@ -18,7 +18,11 @@ This app was built with the intention of storing data about employees and their 
 ## Usage:
 Below you will be able to see a quick walkthrough video of how this applicaiton works. It is meant to be able to store employees, departments, include their roles and managers and be able to show all of the above in a table when called upon.
 
+video link: https://drive.google.com/file/d/1rA-TXbTjSRQ1wOrP4ODdJR0wp9Xvz6E0/view
+
 <img src="./img/snip.png" width="300" height="800" />
+
+Demo:
 
 ![Demo Gif](./img/demo.gif)
 
