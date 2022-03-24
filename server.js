@@ -252,20 +252,4 @@ function askName() {
     ]);
 }
 
-// db.query('SELECT * FROM department', function (err, results) {
-//     console.table(results);
-// });
-
-// db.query('SELECT * FROM managers', function (err, results) {
-//     console.table(results);
-// });
-
-// db.query('SELECT * FROM role', function (err, results) {
-//     console.table(results);
-// });
-
-// db.query('SELECT * FROM employees', function (err, results) {
-//     console.table(results);
-// });
-
 choices();
