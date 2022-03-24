@@ -23,6 +23,7 @@ const questions = {
     viewDepartments: "View All Departments",
     viewRoles: "View All Roles",
     addEmployee: "Add An Employee",
+    updateRole: "Update an Employee Role",
     exit: "Exit"
 };
 
@@ -40,6 +41,7 @@ function choices() {
             questions.viewDepartments,
             questions.viewRoles,
             questions.addEmployee,
+            questions.updateRole,
             questions.exit
         ]
     })
@@ -76,6 +78,10 @@ function choices() {
 
             case questions.addEmployee:
                 addEmployee();
+                break;
+
+            case questions.updateRole:
+                updateRole();
                 break;
 
             case questions.exit:
@@ -237,6 +243,72 @@ async function addEmployee() {
     });
 };
 
+function updateRole() {
+    db.query(
+        `SELECT employee.first_name, employee.last_name, employee.role_id FROM employee;`,
+        (err, res) => {
+          if (err) {
+            console.log(err);
+          }
+          let employees = res;
+          db.query(`SELECT title FROM roles;`, (err, res) => {
+            if (err) {
+              console.log(err);
+            }
+            let currentRoles = res;
+    
+            inquirer
+              .prompt([
+                {
+                  type: "list",
+                  message: "Please choose an employee to update:",
+                  name: "employee",
+                  choices: () => {
+                    let employee = [];
+                    for (let i = 0; i < employees.length; i++) {
+                      let curID = i + 1;
+                      let first = employees[i].first_name;
+                      let last = employees[i].last_name;
+                      let currentRoleID = employees[i].role_id;
+                      employee.push(
+                        `${curID}: ${first} ${last} - current role is #${currentRoleID}`
+                      );
+                    }
+                    return employee;
+                  },
+                },
+                {
+                  type: "list",
+                  message: "Please choose their new role",
+                  name: "newRole",
+                  choices: () => {
+                    let role = [];
+                    for (let i = 0; i < currentRoles.length; i++) {
+                      const curID = i + 1;
+                      let curTitle = currentRoles[i].title;
+                      role.push(`${curID}: ${curTitle}`);
+                    }
+                    return role;
+                  },
+                },
+              ])
+              .then(function (res) {
+                let id = parseInt(res.employee.split(":")[0]);
+                let newRole = parseInt(res.newRole.split(":")[0]);
+                const sql = `UPDATE employee SET role_id = ${newRole} WHERE id = ${id}`;
+                db.query(sql, (err, result) => {
+                  if (err) {
+                    console.log(err);
+                    return;
+                  }
+                  allEmployees();
+                });
+              });
+          });
+        }
+    );
+};
+
 function askName() {
     return ([
         {
@@ -250,6 +322,6 @@ function askName() {
             message: "Enter the last name: "
         }
     ]);
-}
+};
 
 choices();
