@@ -197,38 +197,46 @@ async function addEmployee() {
                 continue;
             }
         }
-        db.query('SELECT * FROM managers', async (err, res) => {
+        db.query('SELECT * FROM employees', async (err, res) => {
             if (err) throw err;
-            let choices = res.map(res => `${res.name}`);
+            let choice = res.map(res => `${res.first_name} ${res.last_name}`);
+            choice.push('none');
             let { manager } = await inquirer.prompt([
                 {
                     name: 'manager',
                     type: 'list',
-                    choices: choices,
+                    choices: choice,
                     message: 'Choose the employees Manager: '
                 }
             ]);
+            let managersID;
             let managerName;
-            for (const data of res) {
-                data.fullName = `${data.name}`;
-                if (data.fullName === manager) {
-                    managerName = data.fullName;
-                    continue;
+            if (manager === 'none') {
+                managersID = null;
+            } else {
+                for (const data of res) {
+                    data.fullName = `${data.first_name} ${data.last_name}`;
+                    if (data.fullName === manager) {
+                        managersID = data.id;
+                        managerName = data.fullName;
+                        continue;
+                    }
                 }
             }
             db.query(
                 'INSERT INTO employees SET ?',
                 {
-                    name: managerName,
+                    first_name: addname.first,
+                    last_name: addname.last,
                     role_id: roleId,
-                    // managers_id: parseInt(managersID)
+                    managers_id: parseInt(managersID)
                 },
                 (err, res) => {
                     if (err) throw err;
                     choices();
                 }
             );
-        });
+        })
     });
 };
 
