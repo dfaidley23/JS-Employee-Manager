@@ -197,10 +197,9 @@ async function addEmployee() {
                 continue;
             }
         }
-        db.query('SELECT * FROM employees', async (err, res) => {
+        db.query('SELECT * FROM managers', async (err, res) => {
             if (err) throw err;
-            let choices = res.map(res => `${res.first_name} ${res.last_name}`);
-            choices.push('none');
+            let choices = res.map(res => `${res.name}`);
             let { manager } = await inquirer.prompt([
                 {
                     name: 'manager',
@@ -209,30 +208,20 @@ async function addEmployee() {
                     message: 'Choose the employees Manager: '
                 }
             ]);
-            let managersID;
             let managerName;
-            if (manager === 'none') {
-                managersID = null;
-            } else {
-                for (const data of res) {
-                    data.fullName = `${data.first_name} ${data.last_name}`;
-                    if (data.fullName === manager) {
-                        managersID = data.id;
-                        managerName = data.fullName;
-                        console.log(managersID);
-                        console.log(managerName);
-                        continue;
-                    }
+            for (const data of res) {
+                data.fullName = `${data.name}`;
+                if (data.fullName === manager) {
+                    managerName = data.fullName;
+                    continue;
                 }
             }
-            console.log('Employee has been added. Please view all employees to verify...');
             db.query(
                 'INSERT INTO employees SET ?',
                 {
-                    first_name: addname.first,
-                    last_name: addname.last,
+                    name: managerName,
                     role_id: roleId,
-                    managers_id: parseInt(managersID)
+                    // managers_id: parseInt(managersID)
                 },
                 (err, res) => {
                     if (err) throw err;
@@ -251,7 +240,7 @@ function updateRole() {
             console.log(err);
           }
           let employees = res;
-          db.query(`SELECT title FROM roles;`, (err, res) => {
+          db.query(`SELECT title FROM role;`, (err, res) => {
             if (err) {
               console.log(err);
             }
