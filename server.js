@@ -242,7 +242,7 @@ async function addEmployee() {
 
 function updateRole() {
     db.query(
-        `SELECT employee.first_name, employee.last_name, employee.role_id FROM employee;`,
+        `SELECT employees.first_name, employees.last_name, employees.role_id FROM employees;`,
         (err, res) => {
           if (err) {
             console.log(err);
@@ -292,7 +292,7 @@ function updateRole() {
               .then(function (res) {
                 let id = parseInt(res.employee.split(":")[0]);
                 let newRole = parseInt(res.newRole.split(":")[0]);
-                const sql = `UPDATE employee SET role_id = ${newRole} WHERE id = ${id}`;
+                const sql = `UPDATE employees SET role_id = ${newRole} WHERE id = ${id}`;
                 db.query(sql, (err, result) => {
                   if (err) {
                     console.log(err);
